@@ -1,0 +1,26 @@
+name: Update Changelog
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          # 最新のLTSバージョンを使用
+          node-version: 'lts/*'
+
+      - name: Update changelog via Codex
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_KEY }}
+        run: |
+          npm install -g @openai/codex
+          codex -a auto-edit --quiet "update CHANGELOG for next release"
